@@ -27,9 +27,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         }
     });
 
-    // We'll bind to 127.0.0.1:3000
+    // bind to 0.0.0.0:3000
     let addr = ((
-        [127, 0, 0, 1],
+        [0, 0, 0, 0],
         env::var("PORT")
             .unwrap_or(String::from("3000"))
             .parse::<u16>()

@@ -5,7 +5,7 @@ use bb8_postgres::tokio_postgres::NoTls;
 use bb8_postgres::PostgresConnectionManager;
 
 pub async fn create_pool() -> Pool<PostgresConnectionManager<NoTls>> {
-    // We connect to the database client
+    // connect to the database client
     let mangager =
         PostgresConnectionManager::new_from_stringlike(env::var("DATABASE_URL").unwrap(), NoTls)
             .unwrap();
