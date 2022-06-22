@@ -2,6 +2,7 @@ mod database;
 mod request_handler;
 
 use std::convert::Infallible;
+use std::env;
 
 use hyper::service::{make_service_fn, service_fn};
 use hyper::Server;
@@ -27,7 +28,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     });
 
     // We'll bind to 127.0.0.1:3000
-    let addr = (([127, 0, 0, 1], 3000)).into();
+    let addr = ((
+        [127, 0, 0, 1],
+        env::var("PORT")
+            .unwrap_or(String::from("3000"))
+            .parse::<u16>()
+            .unwrap(),
+    ))
+        .into();
 
     // Bind the server itself
     let server = Server::bind(&addr).serve(service);
