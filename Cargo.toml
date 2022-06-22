@@ -1,0 +1,12 @@
+[package]
+name = "raw"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dotenv = { version = "0.15.0" }
+bb8-postgres = { version ="0.8.0" }
+hyper = { version = "0.14", features = ["full"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
