@@ -6,9 +6,11 @@ use bb8_postgres::PostgresConnectionManager;
 
 pub async fn create_pool() -> Pool<PostgresConnectionManager<NoTls>> {
     // connect to the database client
-    let mangager =
-        PostgresConnectionManager::new_from_stringlike(env::var("DATABASE_URL").unwrap(), NoTls)
-            .unwrap();
+    let mangager = PostgresConnectionManager::new_from_stringlike(
+        env::var("DATABASE_URL").unwrap_or_else(|_| panic!("no env value set for 'DATABASE_URL'")),
+        NoTls,
+    )
+    .unwrap();
 
     log::info!("Created pool manager");
 

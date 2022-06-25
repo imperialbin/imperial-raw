@@ -16,7 +16,7 @@ async fn main() -> Result<(), Infallible> {
     logging::init_logger();
 
     let _guard = sentry::init((
-        env::var("SENTRY_DSN").unwrap(),
+        env::var("SENTRY_DSN").unwrap_or_else(|_| panic!("no env value set for 'SENTRY_DSN'")),
         sentry::ClientOptions {
             release: sentry::release_name!(),
             environment: Some(env::var("RUST_ENV").unwrap_or("production".into()).into()),
