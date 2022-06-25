@@ -9,6 +9,7 @@ edition = "2021"
 log = { version = "0.4.17" }
 etag = { version = "3.0.0" }
 dotenv = { version = "0.15.0" }
+sentry = { version = "0.27.0" }
 httpdate = { version = "1.0.2" }
 bb8-postgres = { version ="0.8.0" }
 simple_logger = { version = "2.1.0" }

@@ -1,7 +1,7 @@
 use std::convert::Infallible;
 use std::time::Instant;
 
-use super::util::{full_res, small_res, ResData};
+use super::http_util::{full_res, small_res, ResData};
 use bb8_postgres::bb8::Pool;
 use bb8_postgres::bb8::RunError;
 use bb8_postgres::tokio_postgres::{self, NoTls};
@@ -36,7 +36,11 @@ pub async fn handle_with_errors(
             Ok(response)
         }
         // if there was an error we return 500
-        Err(_) => {
+        Err(err) => {
+            // capture the error and send to sentry
+            // to analyze the error later
+            sentry::capture_error(&err);
+
             log::warn!(
                 "{} {} with 500 in {}ms",
                 method,

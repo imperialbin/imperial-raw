@@ -1,7 +1,7 @@
 mod database;
+mod http_util;
 mod logging;
 mod request_handler;
-mod util;
 
 use std::convert::Infallible;
 use std::env;
@@ -15,15 +15,25 @@ async fn main() -> Result<(), Infallible> {
     dotenv::dotenv().ok();
     logging::init_logger();
 
+    let _guard = sentry::init((
+        env::var("SENTRY_DSN").unwrap(),
+        sentry::ClientOptions {
+            release: sentry::release_name!(),
+            environment: Some(env::var("RUST_ENV").unwrap_or("production".into()).into()),
+            ..Default::default()
+        },
+    ));
+
     // create a connection pool
     let pool = database::create_pool().await;
 
     // A `Service` is needed for every connection, so this
     // creates one from our `handle_request` and passes the
     // postgres client down
-    let service = make_service_fn(move |_| {
+    let service = make_service_fn(|_| {
         // clone the pool to pass it down
         let pool = pool.clone();
+
         // service_fn converts our function into a `Service`
         async move {
             Ok::<_, Infallible>(service_fn(move |req| {
@@ -49,6 +59,7 @@ async fn main() -> Result<(), Infallible> {
     // Wait for it to fail indefinetly
     if let Err(e) = server.await {
         log::warn!("server error: {}", e);
+        sentry::capture_error(&e);
     }
 
     Ok(())
